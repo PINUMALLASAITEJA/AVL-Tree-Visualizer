@@ -10,7 +10,7 @@ this.height=1
 let root=null
 
 function height(n){
-return n ? n.height : 0
+return n?n.height:0
 }
 
 function getBF(n){
@@ -18,6 +18,8 @@ return height(n.left)-height(n.right)
 }
 
 function rightRotate(y){
+
+document.getElementById("status").innerText="LL Rotation"
 
 let x=y.left
 let T2=x.right
@@ -32,6 +34,8 @@ return x
 }
 
 function leftRotate(x){
+
+document.getElementById("status").innerText="RR Rotation"
 
 let y=x.right
 let T2=y.left
@@ -72,12 +76,14 @@ return leftRotate(node)
 
 // LR
 if(bf>1 && key>node.left.data){
+document.getElementById("status").innerText="LR Rotation"
 node.left=leftRotate(node.left)
 return rightRotate(node)
 }
 
 // RL
 if(bf<-1 && key<node.right.data){
+document.getElementById("status").innerText="RL Rotation"
 node.right=rightRotate(node.right)
 return leftRotate(node)
 }
@@ -103,42 +109,78 @@ document.getElementById("value").value=""
 function clearTree(){
 root=null
 document.getElementById("tree").innerHTML=""
+document.getElementById("status").innerText="Tree cleared"
+}
+
+function drawTree(node,x,y,gap){
+
+if(!node) return
+
+let svg=document.getElementById("tree")
+
+let r=22
+
+let circle=document.createElementNS("http://www.w3.org/2000/svg","circle")
+circle.setAttribute("cx",x)
+circle.setAttribute("cy",y)
+circle.setAttribute("r",r)
+
+svg.appendChild(circle)
+
+let text=document.createElementNS("http://www.w3.org/2000/svg","text")
+text.setAttribute("x",x)
+text.setAttribute("y",y)
+text.textContent=node.data
+
+svg.appendChild(text)
+
+// Balance Factor
+let bfText=document.createElementNS("http://www.w3.org/2000/svg","text")
+bfText.setAttribute("x",x)
+bfText.setAttribute("y",y-28)
+bfText.setAttribute("class","bf")
+bfText.textContent="BF:"+getBF(node)
+
+svg.appendChild(bfText)
+
+if(node.left){
+
+let line=document.createElementNS("http://www.w3.org/2000/svg","line")
+
+line.setAttribute("x1",x)
+line.setAttribute("y1",y+r)
+
+line.setAttribute("x2",x-gap)
+line.setAttribute("y2",y+80-r)
+
+svg.appendChild(line)
+
+drawTree(node.left,x-gap,y+80,gap/1.6)
+}
+
+if(node.right){
+
+let line=document.createElementNS("http://www.w3.org/2000/svg","line")
+
+line.setAttribute("x1",x)
+line.setAttribute("y1",y+r)
+
+line.setAttribute("x2",x+gap)
+line.setAttribute("y2",y+80-r)
+
+svg.appendChild(line)
+
+drawTree(node.right,x+gap,y+80,gap/1.6)
+}
+
 }
 
 function renderTree(node){
 
-let container=document.getElementById("tree")
-container.innerHTML=""
+let svg=document.getElementById("tree")
 
-if(!node) return
+svg.innerHTML=""
 
-let queue=[]
-queue.push(node)
-
-while(queue.length>0){
-
-let size=queue.length
-
-let levelDiv=document.createElement("div")
-levelDiv.className="level"
-
-for(let i=0;i<size;i++){
-
-let curr=queue.shift()
-
-let div=document.createElement("div")
-div.className="node"
-div.innerText=curr.data
-
-levelDiv.appendChild(div)
-
-if(curr.left) queue.push(curr.left)
-if(curr.right) queue.push(curr.right)
-
-}
-
-container.appendChild(levelDiv)
-
-}
+drawTree(node,600,60,250)
 
 }

@@ -1,58 +1,77 @@
 body{
-font-family: Arial, Helvetica, sans-serif;
+font-family: "Segoe UI", Arial, sans-serif;
 text-align:center;
-background:#f5f7fb;
+background: linear-gradient(135deg,#1e3c72,#2a5298);
+color:white;
 margin:0;
 padding:0;
 }
 
 h1{
-margin-top:40px;
-color:#333;
+margin-top:30px;
+font-size:36px;
 }
 
 .controls{
-margin-top:20px;
+margin-top:30px;
+padding:20px;
+background:rgba(255,255,255,0.1);
+backdrop-filter: blur(10px);
+display:inline-block;
+border-radius:12px;
 }
 
 input{
 padding:10px;
 font-size:16px;
-width:150px;
-border:1px solid #ccc;
-border-radius:5px;
+border-radius:6px;
+border:none;
+width:160px;
 }
 
 button{
-padding:10px 15px;
+padding:10px 18px;
 font-size:16px;
-margin-left:5px;
 border:none;
-background:#3498db;
+border-radius:6px;
+margin-left:8px;
+background:linear-gradient(45deg,#00c6ff,#0072ff);
 color:white;
-border-radius:5px;
 cursor:pointer;
 }
 
-button:hover{
-background:#2980b9;
-}
-
-#tree{
-margin-top:50px;
-}
-
-.level{
-margin:10px 0;
-}
-
-.node{
-display:inline-block;
-padding:12px 16px;
-margin:8px;
-background:#2ecc71;
-color:white;
+#status{
+margin-top:20px;
+font-size:18px;
 font-weight:bold;
-border-radius:50%;
-min-width:40px;
+}
+
+svg{
+margin-top:40px;
+background:rgba(255,255,255,0.1);
+border-radius:12px;
+}
+
+circle{
+fill:#00e676;
+stroke:#1b5e20;
+stroke-width:2;
+}
+
+line{
+stroke:white;
+stroke-width:2;
+}
+
+text{
+font-size:14px;
+font-weight:bold;
+fill:black;
+text-anchor:middle;
+dominant-baseline:middle;
+}
+
+.bf{
+font-size:11px;
+fill:white;
 }
