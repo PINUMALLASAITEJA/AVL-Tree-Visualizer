@@ -1,4 +1,4 @@
-const API = "https://avl-tree-visualizer-vusg.onrender.com/api";
+const API = "https://avl-tree-visualizer-m8we.onrender.com/api";
 
 /* Reset backend tree when page loads */
 window.onload = async () => {
