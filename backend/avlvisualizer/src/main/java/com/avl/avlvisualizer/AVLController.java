@@ -4,24 +4,30 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class AVLController {
 
     private AVLTree tree = new AVLTree();
 
     @GetMapping("/insert")
-    public TreeNode insert(@RequestParam int value) {
-        return tree.insertValue(value);
+    public RotationResponse insert(@RequestParam int value){
+
+        TreeNode root = tree.insertValue(value);
+
+        String rotation = tree.consumeRotation();
+
+        return new RotationResponse(root,rotation);
     }
 
     @GetMapping("/tree")
-    public TreeNode getTree() {
+    public TreeNode getTree(){
         return tree.root;
     }
 
-    @PostMapping("/reset")
-    public String reset() {
+    @GetMapping("/reset")
+    public String reset(){
         tree.reset();
         return "Tree cleared";
     }
+
 }

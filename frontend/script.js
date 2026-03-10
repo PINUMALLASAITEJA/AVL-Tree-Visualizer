@@ -1,29 +1,70 @@
 const API = "http://localhost:8080/api";
 
+/* Reset backend tree when page loads */
+window.onload = async () => {
+    try {
+        await fetch(API + "/reset");
+        document.getElementById("status").innerText = "Tree ready";
+    } catch(err){
+        console.error("Backend not reachable",err);
+    }
+};
+
+
+/* Insert node */
 async function insertNode(){
 
     let value = document.getElementById("value").value;
 
     if(value === "") return;
 
-    const res = await fetch(API + "/insert?value=" + value);
-    const tree = await res.json();
+    try{
 
-    renderTree(tree);
+        const res = await fetch(API + "/insert?value=" + value);
+
+        const data = await res.json();
+
+        if(!data || !data.root){
+            console.warn("Tree data missing");
+            return;
+        }
+
+        renderTree(data.root);
+
+        if(data.rotation !== "NONE"){
+            document.getElementById("status").innerText =
+                "Rotation performed: " + data.rotation;
+        }else{
+            document.getElementById("status").innerText =
+                "Inserted " + value + " (no rotation)";
+        }
+
+    }catch(err){
+        console.error("Insert failed",err);
+    }
 
     document.getElementById("value").value="";
 }
 
+
+/* Clear tree */
 async function clearTree(){
 
-    await fetch(API + "/reset");
-
-    document.getElementById("tree").innerHTML="";
+    try{
+        await fetch(API + "/reset");
+        document.getElementById("tree").innerHTML="";
+        document.getElementById("status").innerText="Tree cleared";
+    }catch(err){
+        console.error("Reset failed",err);
+    }
 }
 
+
+/* Render tree */
 function renderTree(root){
 
     const svg = document.getElementById("tree");
+
     svg.innerHTML="";
 
     if(!root) return;
@@ -31,41 +72,49 @@ function renderTree(root){
     drawTree(root,600,60,250);
 }
 
+
+/* Draw nodes recursively */
 function drawTree(node,x,y,gap){
 
     if(!node) return;
 
     const svg = document.getElementById("tree");
+
     const r = 22;
 
-    // draw node
+    /* Node circle */
     const circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+
     circle.setAttribute("cx",x);
     circle.setAttribute("cy",y);
     circle.setAttribute("r",r);
 
     svg.appendChild(circle);
 
-    // node value
+    /* Node value */
     const text = document.createElementNS("http://www.w3.org/2000/svg","text");
+
     text.setAttribute("x",x);
     text.setAttribute("y",y);
+
     text.textContent=node.data;
 
     svg.appendChild(text);
 
-    // BF display
+    /* Balance Factor */
     const bf = height(node.left)-height(node.right);
 
     const bfText = document.createElementNS("http://www.w3.org/2000/svg","text");
+
     bfText.setAttribute("x",x);
     bfText.setAttribute("y",y-30);
     bfText.setAttribute("class","bf");
+
     bfText.textContent="BF:"+bf;
 
     svg.appendChild(bfText);
 
-    // left child
+    /* Left child */
     if(node.left){
 
         const line = document.createElementNS("http://www.w3.org/2000/svg","line");
@@ -80,7 +129,7 @@ function drawTree(node,x,y,gap){
         drawTree(node.left,x-gap,y+80,gap/1.6);
     }
 
-    // right child
+    /* Right child */
     if(node.right){
 
         const line = document.createElementNS("http://www.w3.org/2000/svg","line");
@@ -96,6 +145,8 @@ function drawTree(node,x,y,gap){
     }
 }
 
+
+/* Height helper */
 function height(node){
     if(!node) return 0;
     return node.height;
